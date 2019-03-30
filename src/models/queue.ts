@@ -728,7 +728,7 @@ export class QueueModel {
     return db('q4u_queue as q')
       .select('q.hn', 'q.vn', 'q.queue_id', 'q.queue_number', 'q.queue_interview', 'q.queue_running', 'q.date_serv',
         'sp.service_point_name', 'sp.local_code as service_point_code',
-        'q.date_create', 'sp.department_id', 'p.priority_name', 'r.room_name', 'r.room_number',
+        'q.date_create', 'sp.department_id', 'p.priority_name', 'p.priority_id', 'r.room_name', 'r.room_number',
         sqlHoscode, sqlHospname)
       .innerJoin('q4u_queue_group_detail as qg', 'qg.queue_id', 'q.queue_id')
       .innerJoin('q4u_service_points as sp', 'sp.service_point_id', 'q.service_point_id')
@@ -738,13 +738,16 @@ export class QueueModel {
   }
 
   apiGetCurrentQueueByHN(db: knex, hn: any, servicePointId: any) {
-    return db('q4u_queue as q')
-      .select('q.room_id', 'q.queue_id', 'q.queue_number', 'pr.priority_name')
+    let sql = db('q4u_queue as q')
+      .select('q.room_id', 'q.queue_id', 'q.queue_number', 'pr.priority_id', 'pr.priority_name')
       .leftJoin('q4u_priorities as pr', 'pr.priority_id', 'q.priority_id')
       .where('q.hn', hn)
       .where('q.service_point_id', servicePointId)
       .orderBy('q.queue_id', 'DESC')
       .limit(1);
+    console.log(sql.toString());
+    return sql;
+
   }
 
   getCurrentQueue(db: knex, hn: any) {
