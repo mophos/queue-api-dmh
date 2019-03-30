@@ -716,7 +716,7 @@ const router = (fastify, { }, next) => {
     const queueId = req.body.queueId;
     const servicePointId = req.body.servicePointId;
     const priorityId = req.body.priorityId;
-
+    const pendigOldQueue = req.body.pendigOldQueue;
     try {
       await queueModel.markPending(db, queueId, servicePointId);
       // get queue info
@@ -734,7 +734,7 @@ const router = (fastify, { }, next) => {
         const prefixPoint: any = rsServicePoint[0].prefix || '0';
         const usePriorityQueueRunning = rsServicePoint[0].priority_queue_running || 'N';
 
-        const useOldQueue: any = rsServicePoint[0].use_old_queue || 'N';
+        const useOldQueue: any = pendigOldQueue
 
         if (useOldQueue === 'Y') {
           var queueNumber = 0;

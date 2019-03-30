@@ -270,8 +270,13 @@ const router = (fastify, { }, next) => {
                 roomNumber: roomNumber,
                 servicePointId: servicePointId
               }
+              if (rs.length) {
+                reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, quereId: rs[0].queue_id, priorityId: rs[0].priority_id });
+              } else {
+                reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK });
 
-              reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK });
+              }
+
 
               fastify.mqttClient.publish(globalTopic, 'update visit', { qos: 0, retain: false });
               fastify.mqttClient.publish(servicePointTopic, JSON.stringify(payload), { qos: 0, retain: false });
@@ -332,7 +337,7 @@ const router = (fastify, { }, next) => {
     }
   });
 
-  fastify.post('/pending',async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/pending', async (req: fastify.Request, reply: fastify.Reply) => {
 
     const queueId = req.body.queueId;
     const servicePointId = req.body.servicePointId;
@@ -345,7 +350,7 @@ const router = (fastify, { }, next) => {
           const decoded = fastify.jwt.verify(token)
           // check token 
           const rsToken: any = await tokenModel.find(db, token);
-          
+
           if (rsToken.length) {
             await queueModel.markPending(db, queueId, servicePointId);
             // get queue info
