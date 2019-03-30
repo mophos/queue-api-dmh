@@ -351,7 +351,7 @@ export class QueueModel {
   }
 
   getWaitingListQuery(db: knex, dateServ: any, servicePointId: any, query: any) {
-    
+
     var _query = `%${query}%`;
 
     return db('q4u_queue as q')
@@ -766,8 +766,9 @@ export class QueueModel {
 
   apiGetCurrentQueueByHN(db: knex, hn: any, servicePointId: any) {
     let sql = db('q4u_queue as q')
-      .select('q.room_id', 'q.queue_id', 'q.queue_number', 'pr.priority_id', 'pr.priority_name')
+      .select('q.room_id', 'q.queue_id', 'q.queue_number', 'pr.priority_id', 'pr.priority_name', 'r.room_number')
       .leftJoin('q4u_priorities as pr', 'pr.priority_id', 'q.priority_id')
+      .leftJoin('q4u_service_rooms as r', 'r.room_id', 'q.room_id')
       .where('q.hn', hn)
       .where('q.service_point_id', servicePointId)
       .orderBy('q.queue_id', 'DESC')
