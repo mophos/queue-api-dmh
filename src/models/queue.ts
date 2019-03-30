@@ -350,6 +350,33 @@ export class QueueModel {
       .offset(offset);
   }
 
+  getWaitingListQuery(db: knex, dateServ: any, servicePointId: any, query: any) {
+    
+    var _query = `%${query}%`;
+
+    return db('q4u_queue as q')
+      .select('q.queue_id', 'q.queue_interview', 'q.hn', 'q.vn', 'q.service_point_id', 'q.priority_id', 'q.queue_number',
+        'q.room_id', 'q.date_serv', 'q.time_serv', 'p.title', 'p.first_name',
+        'p.last_name', 'p.birthdate', 'pr.priority_name', 'q.is_interview')
+      .innerJoin('q4u_person as p', 'p.hn', 'q.hn')
+      .innerJoin('q4u_priorities as pr', 'pr.priority_id', 'q.priority_id')
+      .where('q.service_point_id', servicePointId)
+      .where('q.date_serv', dateServ)
+      // .whereNull('q.room_id')
+      .where('q.is_completed', 'N')
+      .whereNot('q.is_cancel', 'Y')
+      .whereNot('q.mark_pending', 'Y')
+      .where((w) => {
+        w.where('q.hn', 'like', _query)
+        w.orWhere('q.queue_number', 'like', _query)
+        w.orWhere('p.first_name', 'like', _query)
+        w.orWhere('p.last_name', 'like', _query)
+      })
+      .orderBy('q.queue_id', 'asc')
+      .groupBy('q.queue_id')
+      .limit(50)
+  }
+
   getWaitingListTotal(db: knex, dateServ: any, servicePointId: any) {
     return db('q4u_queue as q')
       .select(db.raw('count(*) as total'))
