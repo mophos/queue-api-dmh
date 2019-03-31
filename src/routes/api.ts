@@ -271,7 +271,7 @@ const router = (fastify, { }, next) => {
                 servicePointId: servicePointId
               }
               if (rs.length) {
-                reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, quereId: rs[0].queue_id, priorityId: rs[0].priority_id });
+                reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, queueId: rs[0].queue_id, priorityId: rs[0].priority_id });
               } else {
                 reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK });
 
