@@ -570,7 +570,7 @@ export class QueueModel {
         'r.room_name', 'r.room_id', 'r.room_number', 'sp.service_point_name', 'sp2.service_point_name as pending_to_service_point_name')
       .innerJoin('q4u_person as p', 'p.hn', 'q.hn')
       .innerJoin('q4u_priorities as pr', 'pr.priority_id', 'q.priority_id')
-      .innerJoin('q4u_service_rooms as r', 'r.room_id', 'q.room_id')
+      .leftJoin('q4u_service_rooms as r', 'r.room_id', 'q.room_id')
       .innerJoin('q4u_service_points as sp', 'sp.service_point_id', 'q.service_point_id')
       .leftJoin('q4u_service_points as sp2', 'sp2.service_point_id', 'q.pending_to_service_point_id')
       .where('q.date_serv', dateServ)
