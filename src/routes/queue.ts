@@ -968,8 +968,6 @@ const router = (fastify, { }, next) => {
       const departmentTopic = process.env.DEPARTMENT_TOPIC + '/' + departmentId;
       const globalTopic = process.env.QUEUE_CENTER_TOPIC;
 
-      console.log('DEPARTMENT TOPIC = ' + departmentTopic);
-
       const payload = {
         queueNumber: queueNumber,
         roomNumber: roomNumber,
