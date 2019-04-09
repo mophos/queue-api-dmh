@@ -824,7 +824,7 @@ const router = (fastify, { }, next) => {
             }
             // end pendding
             // start call
-            var rs: any = await queueModel.apiGetCurrentQueueByHN(db, hn, servicePointId);
+            var rs: any = await queueModel.getCurrentQueue(db, hn);
 
             if (rs.length) {
               var _queue = rs[0];
@@ -832,7 +832,6 @@ const router = (fastify, { }, next) => {
               const dateServ: any = moment().format('YYYY-MM-DD');
 
               const queueId = _queue.queue_id;
-              const roomNumber = _queue.room_number;
               const queueNumber = _queue.queue_number;
 
               await queueModel.setQueueRoomNumber(db, queueId, roomId);
@@ -844,13 +843,15 @@ const router = (fastify, { }, next) => {
               var _queueIds: any = [];
               _queueIds.push(queueId);
 
-              const rsQueue: any = await queueModel.getResponseQueueInfo(db, _queueIds);
 
+              const rsQueue: any = await queueModel.getResponseQueueInfoApi(db, _queueIds);
+              const data = rsQueue[0];
+              const roomNumber = data.room_number;
               // Send notify to H4U Server
               if (process.env.ENABLE_Q4U.toUpperCase() === 'Y') {
 
                 if (rsQueue.length) {
-                  const data = rsQueue[0];
+
                   const queueWithoutPrefix = +data.queue_running;
 
                   const params = {
