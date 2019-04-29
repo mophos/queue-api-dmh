@@ -825,7 +825,7 @@ const router = (fastify, { }, next) => {
             // end pendding
             // start call
             var rs: any = await queueModel.getCurrentQueue(db, hn);
-
+            var departmentId: any;
             if (rs.length) {
               var _queue = rs[0];
 
@@ -845,6 +845,10 @@ const router = (fastify, { }, next) => {
 
 
               const rsQueue: any = await queueModel.getResponseQueueInfoApi(db, _queueIds);
+
+              if (rsQueue.length) {
+                departmentId = rsQueue[0].department_id;
+              }
               const data = rsQueue[0];
               const roomNumber = data.room_number;
               // Send notify to H4U Server
@@ -884,7 +888,8 @@ const router = (fastify, { }, next) => {
               const payload = {
                 queueNumber: queueNumber,
                 roomNumber: roomNumber,
-                servicePointId: servicePointId
+                servicePointId: servicePointId,
+                departmentId: departmentId
               }
 
               if (rs.length) {
