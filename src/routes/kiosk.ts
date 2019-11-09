@@ -115,6 +115,7 @@ const router = (fastify, { }, next) => {
     var dbHIS: Knex = fastify.dbHIS;
     if (cid) {
       try {
+        const remed: any = await kioskModel.remed(data.hn);
         const rs: any = await hisModel.getPatientInfo(dbHIS, cid);
         if (rs.length) {
           var data = rs[0];
@@ -133,7 +134,8 @@ const router = (fastify, { }, next) => {
             birthDate: thDate,
             engBirthDate: moment(birthDate).format('YYYY-MM-DD'),
             title: title,
-            sex: sex
+            sex: sex,
+            remed: remed || false
           };
 
           reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, results: patient })

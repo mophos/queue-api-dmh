@@ -84,5 +84,28 @@ export class KioskModel {
     });
   }
 
+  remed(hn) {
+    return new Promise((resolve: any, reject: any) => {
+      const options = {
+        method: 'GET',
+        url: `http://192.168.44.14/miracle/ci3_cgi/index.php/Queuekios/get_remed?hn=${hn}`,
+        agentOptions: {
+          rejectUnauthorized: false
+        },
+        headers:
+        {
+          'content-type': 'text/json'
+        }
+      };
+
+      request(options, function (error, response, body) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(body);
+        }
+      });
+    });
+  }
 
 }
