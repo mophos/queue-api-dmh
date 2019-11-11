@@ -112,33 +112,32 @@ const router = (fastify, { }, next) => {
   // ===============
   fastify.post('/patient/info', { preHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
     const cid = req.body.cid;
-    var dbHIS: Knex = fastify.dbHIS;
+    const dbHIS: Knex = fastify.dbHIS;
     if (cid) {
       try {
-        const remed: any = await kioskModel.remed(data.hn);
         const rs: any = await hisModel.getPatientInfo(dbHIS, cid);
         if (rs.length) {
-          var data = rs[0];
-          var hn = data.hn;
-          var firstName = data.first_name;
-          var lastName = data.last_name;
-          var birthDate = data.birthdate;
-          var title = data.title;
-          var sex = data.sex;
+          const data = rs[0];
 
-          var thDate = `${moment(birthDate).format('DD/MM')}/${moment(birthDate).get('year') + 543}`;
-          var patient = {
+          const hn = data.hn;
+          const firstName = data.first_name;
+          const lastName = data.last_name;
+          const birthDate = data.birthdate;
+          const title = data.title;
+          const sex = data.sex;
+
+          const thDate = `${moment(birthDate).format('DD/MM')}/${moment(birthDate).get('year') + 543}`;
+          const patient = {
             hn: hn,
             firstName: firstName,
             lastName: lastName,
             birthDate: thDate,
             engBirthDate: moment(birthDate).format('YYYY-MM-DD'),
             title: title,
-            sex: sex,
-            remed: remed || false
+            sex: sex
           };
 
-          reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, results: patient })
+          reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, results: patient });
 
         } else {
           reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.NOT_FOUND, message: 'ไม่พบข้อมูล' });
@@ -151,7 +150,23 @@ const router = (fastify, { }, next) => {
       reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ statusCode: HttpStatus.NOT_FOUND, message: 'CID not found!' })
     }
 
-  })
+  });
+
+  fastify.get('/patient/info/remed', { preHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+    const hn = req.query.hn;
+    if (hn) {
+      try {
+        const remed: any = await kioskModel.remed(hn);
+        reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, results: remed || false });
+      } catch (error) {
+        fastify.log.error(error);
+        reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message, results: false });
+      }
+    } else {
+      reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ statusCode: HttpStatus.NOT_FOUND, message: 'hn not found!' });
+    }
+
+  });
 
   fastify.post('/nhso', { preHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
     // const token = req.body.token;
