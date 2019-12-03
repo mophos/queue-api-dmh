@@ -29,11 +29,11 @@ export class KioskModel {
     });
   }
 
-  triggerGet(url, hn, cid, localCode, servicePointId) {
+  triggerGet(url, hn, cid, localCode, servicePointId, queueNumber) {
     return new Promise((resolve: any, reject: any) => {
       const options = {
         method: 'GET',
-        url: `${url}?hn=${hn}&cid=${cid}&localCode=${localCode}&servicePointId=${servicePointId}`,
+        url: `${url}?hn=${hn}&cid=${cid}&localCode=${localCode}&servicePointId=${servicePointId}&queueNumber=${queueNumber}`,
         agentOptions: {
           rejectUnauthorized: false
         },
@@ -53,7 +53,7 @@ export class KioskModel {
     });
   }
 
-  triggerPOST(url, hn, cid, localCode, servicePointId) {
+  triggerPOST(url, hn, cid, localCode, servicePointId, queueNumber) {
     return new Promise((resolve: any, reject: any) => {
       const options = {
         method: 'POST',
@@ -69,7 +69,8 @@ export class KioskModel {
           hn: hn,
           cid: cid,
           localCode: localCode,
-          servicePointId: servicePointId
+          servicePointId: servicePointId,
+          queueNumber: queueNumber
         },
         json: true
       };

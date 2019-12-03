@@ -133,15 +133,32 @@ const router = (fastify, { }, next) => {
     } else {
       reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.BAD_REQUEST, message: 'ไม่พบรหัสคิวที่ต้องการ' })
     }
+  });
+
+  fastify.post('/id-card', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+    const topic = req.body.topic;
+    const printIdCard = req.body.printIdCard;
+
+    if (printIdCard && topic) {
+      try {
+        reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK });
+        fastify.mqttClient.publish(topic, JSON.stringify({ printIdCard: printIdCard }), { qos: 0, retain: false });
+      } catch (error) {
+        reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
+      }
+
+    } else {
+      reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.BAD_REQUEST, message: 'ไม่พบรหัสคิวที่ต้องการ' });
+    }
 
   });
 
   fastify.get('/qrcode', async (req: fastify.Request, reply: fastify.Reply) => {
-    reply.send('ok')
+    reply.send('ok');
   });
 
   next();
 
-}
+};
 
 module.exports = router;

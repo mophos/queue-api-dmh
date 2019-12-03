@@ -275,10 +275,10 @@ const router = (fastify, { }, next) => {
           fastify.mqttClient.publish(topic, 'update visit', { qos: 0, retain: false });
           fastify.mqttClient.publish(topicServicePoint, 'update visit', { qos: 0, retain: false });
 
-          reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, hn: hn, vn: vn, queueNumber: queueNumber, queueId: queueId[0] });
+          reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, hn: hn, vn: vn, queueNumber: strQueueNumber, queueId: queueId[0] });
 
         } else {
-          reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'ไม่พบรหัสแผนกที่ต้องการ' })
+          reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'ไม่พบรหัสแผนกที่ต้องการ' });
         }
 
       } catch (error) {

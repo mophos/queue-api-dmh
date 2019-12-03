@@ -65,7 +65,7 @@ const router = (fastify, { }, next) => {
           cid: cid,
           fullname: `${title}${fname} ${lname}`,
           birthDate: birthDate
-        }
+        };
         const payload = {
           ok: true,
           results: obj
@@ -81,7 +81,7 @@ const router = (fastify, { }, next) => {
       reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR) })
     }
 
-  })
+  });
 
   fastify.delete('/profile', async (req: fastify.Request, reply: fastify.Reply) => {
 
@@ -197,18 +197,19 @@ const router = (fastify, { }, next) => {
     const type = req.body.type;
     const localCode = req.body.localCode;
     const servicePointId = req.body.servicePointId;
+    const queueNumber = req.body.queueNumber;
 
     try {
       if (type == 'GET') {
-        await kioskModel.triggerGet(url, hn, cid, localCode, servicePointId);
+        await kioskModel.triggerGet(url, hn, cid, localCode, servicePointId, queueNumber);
       }
       if (type == 'POST') {
-        await kioskModel.triggerPOST(url, hn, cid, localCode, servicePointId);
+        await kioskModel.triggerPOST(url, hn, cid, localCode, servicePointId, queueNumber);
       }
       reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK });
     } catch (error) {
       fastify.log.error(error);
-      reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message })
+      reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message });
     }
   });
 
