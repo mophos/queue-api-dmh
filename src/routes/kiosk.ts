@@ -112,13 +112,18 @@ const router = (fastify, { }, next) => {
   // ===============
   fastify.post('/patient/info', { preHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
     const cid = req.body.cid;
+    const hn = req.body.hn;
     const dbHIS: Knex = fastify.dbHIS;
-    if (cid) {
+    if (cid || hn) {
       try {
-        const rs: any = await hisModel.getPatientInfo(dbHIS, cid);
+        let rs: any;
+        if (cid) {
+          rs = await hisModel.getPatientInfo(dbHIS, cid);
+        } else {
+          rs = await hisModel.getPatientInfoWithHN(dbHIS, hn);
+        }
         if (rs.length) {
           const data = rs[0];
-
           const hn = data.hn;
           const firstName = data.first_name;
           const lastName = data.last_name;
