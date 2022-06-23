@@ -200,6 +200,7 @@ app.register(require('./routes/departments'), { prefix: '/v1/departments', logge
 app.register(require('./routes/print'), { prefix: '/v1/print', logger: true });
 app.register(require('./routes/sounds'), { prefix: '/v1/sounds', logger: true });
 app.register(require('./routes/kiosk'), { prefix: '/v1/kiosk', logger: true });
+app.register(require('./routes/nhso'), { prefix: '/v1/nhso', logger: true });
 
 app.get('/', async (req: fastify.Request, reply: fastify.Reply) => {
   reply.code(200).send({ message: 'Welcome to Q4U API services!', version: '2.9 build 20190319-1' });
