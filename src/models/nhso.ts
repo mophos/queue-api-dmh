@@ -14,7 +14,7 @@ export class NhsoModel {
         {
           'content-type': 'text/json'
         },
-        body: data
+        body: JSON.stringify(data)
       };
 
       request(options, function (error, response, body) {

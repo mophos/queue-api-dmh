@@ -127,13 +127,6 @@ export class QueueModel {
       }, 'queue_id');
   }
 
-  // checkDuplicatedQueue(db: knex, hn: any, vn: any, servicePointId: any) {
-  //   return db('q4u_queue')
-  //     .select(db.raw('count(*) as total'))
-  //     .where('service_point_id', servicePointId)
-  //     .where('hn', hn)
-  //     .where('vn', vn);
-  // }
 
   searchQueueByDepartmentId(db: knex, dateServ: any, departmentId: any, limit: any, offset: any, query: any) {
     let _query = `%${query}%`;
@@ -162,9 +155,9 @@ export class QueueModel {
   }
 
   searchQueueByDepartmentIdTotal(db: knex, dateServ: any, departmentId: any, query: any) {
-    let _query = `%${query}%`;
+    const _query = `%${query}%`;
     return db('q4u_queue as q')
-      .select(db.raw('count(*) as total'))
+      .count('* as total')
       .innerJoin('q4u_person as p', 'p.hn', 'q.hn')
       .innerJoin('q4u_priorities as pr', 'pr.priority_id', 'q.priority_id')
       .innerJoin('q4u_service_points as sp', 'sp.service_point_id', 'q.service_point_id')
@@ -172,8 +165,8 @@ export class QueueModel {
       .where('sp.department_id', departmentId)
       .where('q.mark_pending', 'N')
       .where((w) => {
-        w.where('q.hn', 'like', _query)
-        w.orWhere('q.queue_number', 'like', _query)
+        w.where('q.hn', 'like', _query);
+        w.orWhere('q.queue_number', 'like', _query);
       })
       .whereNot('q.is_cancel', 'Y')
       .where('q.date_serv', dateServ);
