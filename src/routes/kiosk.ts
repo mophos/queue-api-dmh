@@ -125,6 +125,7 @@ const router = (fastify, { }, next) => {
         if (rs.length) {
           const data = rs[0];
           const hn = data.hn;
+          const cid = data.cid;
           const firstName = data.first_name;
           const lastName = data.last_name;
           const birthDate = data.birthdate;
@@ -134,6 +135,7 @@ const router = (fastify, { }, next) => {
           const thDate = `${moment(birthDate).format('DD/MM')}/${moment(birthDate).get('year') + 543}`;
           const patient = {
             hn: hn,
+            cid: cid,
             firstName: firstName,
             lastName: lastName,
             birthDate: thDate,

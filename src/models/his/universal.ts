@@ -8,13 +8,13 @@ export class UniversalModel {
 
   getPatientInfo(db: knex, cid: any) {
     return db('q4u_patient')
-      .select('hn', 'first_name', 'title', 'sex', 'last_name', 'birthdate')
+      .select('cid', 'hn', 'first_name', 'title', 'sex', 'last_name', 'birthdate')
       .where('cid', cid).limit(1);
   }
 
   getPatientInfoWithHN(db: knex, hn: any) {
     return db('q4u_patient')
-      .select('hn', 'first_name', 'title', 'sex', 'last_name', 'birthdate')
+      .select('cid', 'hn', 'first_name', 'title', 'sex', 'last_name', 'birthdate')
       .where('hn', hn).limit(1);
   }
 
