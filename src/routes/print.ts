@@ -99,6 +99,8 @@ const router = (fastify, { }, next) => {
           const lastName: any = info.last_name;
           const queueInterview = info.queue_interview;
           const priorityName: any = info.priority_name;
+          const authenCode: any = info.authen_code;
+
           const dateServ: any = moment(info.date_serv).format('YYYYMMDD');
           const timeServ: any = moment(info.time_serv, "HH:mm:ss").format('HHmm');
           const dateCreated: any = moment(info.date_create).locale('th').format('DD/MM/YYYY HH:mm');
@@ -116,7 +118,8 @@ const router = (fastify, { }, next) => {
             "servicePointName": servicePointName,
             "remainQueue": remainQueue,
             "priorityName": priorityName,
-            "queueInterview": queueInterview
+            "queueInterview": queueInterview,
+            "authenCode": authenCode,
           };
 
           reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK });

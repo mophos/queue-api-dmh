@@ -123,7 +123,8 @@ export class QueueModel {
         his_queue: qData.hisQueue,
         priority_id: qData.priorityId,
         date_create: qData.dateCreate,
-        queue_interview: qData.queueInterview
+        queue_interview: qData.queueInterview,
+        authen_code: qData.authenCode,
       }, 'queue_id');
   }
 
@@ -723,7 +724,7 @@ export class QueueModel {
 
   getPrintInfo(db: knex, queueId: any) {
     const sql = `
-    select q.hn, q.vn, q.queue_id, q.queue_interview, q.queue_number, q.queue_running, q.date_serv, q.time_serv,
+    select q.hn, q.vn, q.queue_id, q.queue_interview, q.queue_number, q.queue_running, q.date_serv, q.time_serv, q.authen_code,
     sp.service_point_name, sp.local_code, q.date_create, ps.first_name, ps.last_name,
     (select hosname from q4u_system limit 1) as hosname,
     (select hoscode from q4u_system limit 1) as hosid,
@@ -746,7 +747,7 @@ export class QueueModel {
     var sqlHoscode = db('q4u_system').select('hoscode').as('hosid');
 
     return db('q4u_queue as q')
-      .select('q.hn', 'q.vn', 'q.queue_id', 'q.queue_number', 'q.queue_interview', 'q.queue_running', 'q.date_serv',
+      .select('q.hn', 'q.vn', 'q.queue_id', 'q.queue_number', 'q.queue_interview', 'q.queue_running', 'q.date_serv', 'q.authen_code',
         'sp.service_point_name', 'sp.local_code as service_point_code',
         'q.date_create', 'sp.department_id', 'p.priority_name', 'p.priority_id', 'r.room_name', 'r.room_number',
         sqlHoscode, sqlHospname)
@@ -763,7 +764,7 @@ export class QueueModel {
     var sqlHoscode = db('q4u_system').select('hoscode').as('hosid');
 
     return db('q4u_queue as q')
-      .select('q.hn', 'q.vn', 'q.queue_id', 'q.queue_number', 'q.queue_interview', 'q.queue_running', 'q.date_serv',
+      .select('q.hn', 'q.vn', 'q.queue_id', 'q.queue_number', 'q.queue_interview', 'q.queue_running', 'q.date_serv', 'q.authen_code',
         'sp.service_point_name', 'sp.local_code as service_point_code',
         'q.date_create', 'sp.department_id', 'p.priority_name', 'p.priority_id', 'r.room_name', 'r.room_number',
         sqlHoscode, sqlHospname)

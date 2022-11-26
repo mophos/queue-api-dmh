@@ -164,6 +164,7 @@ const router = (fastify, { }, next) => {
     const title = req.body.title;
     const birthDate = req.body.birthDate;
     const sex = req.body.sex;
+    const authenCode = req.body.authenCode;
 
     if (hn && vn && localCode && dateServ && timeServ && firstName && lastName && birthDate) {
       try {
@@ -266,7 +267,7 @@ const router = (fastify, { }, next) => {
           qData.hisQueue = hisQueue;
           qData.queueRunning = _queueRunning;
           qData.queueInterview = queueInterview;
-
+          qData.authenCode = authenCode;
           const queueId: any = await queueModel.createQueueInfo(db, qData);
 
           const topic = process.env.QUEUE_CENTER_TOPIC;
