@@ -42,7 +42,7 @@ switch (hisType) {
 
 const router = (fastify, { }, next) => {
 
-  const db: Knex = fastify.db;
+  // const db: Knex = fastify.db;
 
   // send from smartcard
   fastify.post('/profile', async (req: any, reply: any) => {

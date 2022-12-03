@@ -96,75 +96,26 @@ app.register(require('./plugins/db'), {
   connectionName: 'db'
 });
 
-if (process.env.DBHIS_TYPE === 'pg' || process.env.DBHIS_TYPE === 'mssql' || process.env.DBHIS_TYPE === 'oracledb') {
-
-  if (process.env.DBHIS_TYPE === 'pg') {
-    app.register(require('./plugins/db'), {
-      connection: {
-        client: process.env.DBHIS_TYPE,
-        connection: {
-          host: process.env.DBHIS_HOST,
-          user: process.env.DBHIS_USER,
-          port: +process.env.DBHIS_PORT,
-          password: process.env.DBHIS_PASSWORD,
-          database: process.env.DBHIS_NAME,
-        },
-        searchPath: ['public'],
-        pool: {
-          min: 10,
-          max: 100
-        },
-        debug: false,
-      },
-
-      connectionName: 'dbHIS'
-    });
-  } else {
-    app.register(require('./plugins/db'), {
-      connection: {
-        client: process.env.DBHIS_TYPE,
-        connection: {
-          host: process.env.DBHIS_HOST,
-          user: process.env.DBHIS_USER,
-          port: +process.env.DBHIS_PORT,
-          password: process.env.DBHIS_PASSWORD,
-          database: process.env.DBHIS_NAME,
-        },
-        pool: {
-          min: 10,
-          max: 100
-        },
-        debug: false,
-      },
-      connectionName: 'dbHIS'
-    });
-  }
-
-} else {
-  app.register(require('./plugins/db'), {
+app.register(require('./plugins/db'), {
+  connection: {
+    client: 'pg',
     connection: {
-      client: 'mysql',
-      connection: {
-        host: process.env.DBHIS_HOST,
-        user: process.env.DBHIS_USER,
-        port: +process.env.DBHIS_PORT,
-        password: process.env.DBHIS_PASSWORD,
-        database: process.env.DBHIS_NAME,
-      },
-      pool: {
-        min: 10,
-        max: 100,
-        afterCreate: (conn, done) => {
-          conn.query('SET NAMES utf8', (err) => {
-            done(err, conn);
-          });
-        }
-      },
-      debug: false,
+      host: process.env.DBHIS_HOST,
+      user: process.env.DBHIS_USER,
+      port: +process.env.DBHIS_PORT,
+      password: process.env.DBHIS_PASSWORD,
+      database: process.env.DBHIS_NAME,
     },
-    connectionName: 'dbHIS'
-  });
-}
+    searchPath: ['public'],
+    pool: {
+      min: 10,
+      max: 100
+    },
+    debug: false,
+  },
+
+  connectionName: 'dbHIS'
+});
 
 // MQTT
 app.register(require('./plugins/mqtt'), {
