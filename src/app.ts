@@ -35,7 +35,7 @@ app.register(import('@fastify/rate-limit'), {
 })
 
 app.register(require('@fastify/static'), {
-  root: path.join(__dirname, 'public'),
+  root: path.join(__dirname, '../public'),
 })
 
 app.register(require('@fastify/jwt'), {
@@ -212,7 +212,7 @@ app.get('/', async (req: any, reply: any) => {
 const port = 3002;
 const host = '0.0.0.0';
 
-app.listen(port, host, (err) => {
+app.listen({ port: port, host: host }, (err) => {
   if (err) throw err;
   console.log(app.server.address());
 });
