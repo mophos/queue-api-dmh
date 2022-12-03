@@ -1,6 +1,6 @@
 /// <reference path="../../typings.d.ts" />
 
-import * as knex from 'knex';
+import { Knex } from 'knex';
 import * as fastify from 'fastify';
 import * as moment from 'moment';
 
@@ -12,9 +12,9 @@ const queueModel = new QueueModel();
 
 const router = (fastify, { }, next) => {
 
-  var db: knex = fastify.db;
+  var db: Knex = fastify.db;
 
-  fastify.get('/queue', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/queue', async (req: any, reply: any) => {
     const queueId: any = req.query.queueId;
 
     if (queueId) {
@@ -74,7 +74,7 @@ const router = (fastify, { }, next) => {
 
   });
 
-  fastify.post('/queue/prepare/print', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/queue/prepare/print', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
     const queueId: any = req.body.queueId;
     const topic = req.body.topic;
     const printSmallQueue = req.body.printSmallQueue || 'N';
@@ -138,7 +138,7 @@ const router = (fastify, { }, next) => {
     }
   });
 
-  fastify.post('/id-card', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/id-card', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
     const topic = req.body.topic;
     const printIdCard = req.body.printIdCard;
 
@@ -156,7 +156,7 @@ const router = (fastify, { }, next) => {
 
   });
 
-  fastify.get('/qrcode', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/qrcode', async (req: any, reply: any) => {
     reply.send('ok');
   });
 

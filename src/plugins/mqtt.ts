@@ -15,4 +15,4 @@ async function fastifyMqtt(fastify, opts, next) {
   }
 }
 
-module.exports = fastifyPlugin(fastifyMqtt, '>=0.30.0')
+module.exports = fastifyPlugin(fastifyMqtt, '4.x')

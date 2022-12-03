@@ -4,43 +4,46 @@ import path = require('path');
 import * as HttpStatus from 'http-status-codes';
 import * as fastify from 'fastify';
 
-const serveStatic = require('serve-static');
-
 require('dotenv').config({ path: path.join(__dirname, '../config') });
 
-import { Server, IncomingMessage, ServerResponse } from 'http';
+import helmet = require('@fastify/helmet');
 
-import helmet = require('fastify-helmet');
-
-const app: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
+const app: fastify.FastifyInstance = fastify.fastify({
   logger: {
-    level: 'error',
-    prettyPrint: true
-  },
-  bodyLimit: 5 * 1048576,
-});
+    transport:
+      process.env.ENV === 'development'
+        ? {
+          target: 'pino-pretty',
+          options: {
+            translateTime: 'HH:MM:ss Z',
+            ignore: 'pid,hostname'
+          }
+        }
+        : undefined
+  }
+})
 
-app.register(require('fastify-formbody'));
-app.register(require('fastify-cors'), {});
-app.register(require('fastify-no-icon'));
+app.register(require('@fastify/formbody'))
+app.register(require('@fastify/cors'), {})
 app.register(
-  helmet,
-  { hidePoweredBy: { setTo: 'PHP 5.2.0' } }
+  helmet
 );
 
-app.register(require('fastify-rate-limit'), {
+app.register(import('@fastify/rate-limit'), {
   max: +process.env.MAX_CONNECTION_PER_MINUTE || 1000000,
   timeWindow: '1 minute'
-});
+})
 
-app.use(serveStatic(path.join(__dirname, '../public')));
+app.register(require('@fastify/static'), {
+  root: path.join(__dirname, 'public'),
+})
 
-app.register(require('fastify-jwt'), {
+app.register(require('@fastify/jwt'), {
   secret: process.env.SECRET_KEY
 });
 
 var templateDir = path.join(__dirname, '../templates');
-app.register(require('point-of-view'), {
+app.register(require('@fastify/view'), {
   engine: {
     ejs: require('ejs')
   },
@@ -202,7 +205,7 @@ app.register(require('./routes/sounds'), { prefix: '/v1/sounds', logger: true })
 app.register(require('./routes/kiosk'), { prefix: '/v1/kiosk', logger: true });
 app.register(require('./routes/nhso'), { prefix: '/v1/nhso', logger: true });
 
-app.get('/', async (req: fastify.Request, reply: fastify.Reply) => {
+app.get('/', async (req: any, reply: any) => {
   reply.code(200).send({ message: 'Welcome to Q4U API services!', version: '2.9 build 20190319-1' });
 });
 

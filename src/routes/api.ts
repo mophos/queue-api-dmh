@@ -1,6 +1,6 @@
 /// <reference path="../../typings.d.ts" />
+import { Knex } from 'knex';
 
-import * as Knex from 'knex';
 import * as fastify from 'fastify';
 import * as moment from 'moment';
 import * as HttpStatus from 'http-status-codes';
@@ -34,7 +34,7 @@ const router = (fastify, { }, next) => {
     }
   };
 
-  fastify.post('/register', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/register', async (req: any, reply: any) => {
     const token = req.body.token;
     const hn = req.body.hn;
     const vn = req.body.vn;
@@ -196,7 +196,7 @@ const router = (fastify, { }, next) => {
 
   });
 
-  fastify.post('/call', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/call', async (req: any, reply: any) => {
 
     const hn = req.body.hn;
     const servicePointId = req.body.servicePointId;
@@ -316,7 +316,7 @@ const router = (fastify, { }, next) => {
     }
   });
 
-  fastify.post('/caller', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/caller', async (req: any, reply: any) => {
 
     const hn = req.body.hn;
     const servicePointId = req.body.servicePointId;
@@ -426,7 +426,7 @@ const router = (fastify, { }, next) => {
   });
 
   // get patient current queue
-  fastify.get('/queue', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/queue', async (req: any, reply: any) => {
     const token = req.query.token;
     const hn = req.query.hn;
 
@@ -454,7 +454,7 @@ const router = (fastify, { }, next) => {
     }
   });
 
-  fastify.post('/pending', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/pending', async (req: any, reply: any) => {
 
     const queueId = req.body.queueId;
     const servicePointId = req.body.servicePointId;
@@ -546,7 +546,7 @@ const router = (fastify, { }, next) => {
                 var newQueueId = null;
                 var queueInterview = 0;
 
-                var rs1: any;
+                var rs1: any[];
 
                 if (usePriorityQueueRunning === 'Y') {
                   rs1 = await queueModel.checkServicePointQueueNumber(db, servicePointId, dateServ, priorityId);
@@ -641,7 +641,7 @@ const router = (fastify, { }, next) => {
     }
   });
 
-  fastify.post('/call/drug', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/call/drug', async (req: any, reply: any) => {
 
     const hn = req.body.hn;
     const servicePointId = req.body.servicePointId;
@@ -741,7 +741,7 @@ const router = (fastify, { }, next) => {
                   var newQueueId = null;
                   var queueInterview = 0;
 
-                  var rs1: any;
+                  var rs1: any[];
 
                   if (usePriorityQueueRunning === 'Y') {
                     rs1 = await queueModel.checkServicePointQueueNumber(db, servicePointId, dateServ, priorityId);
@@ -931,7 +931,7 @@ const router = (fastify, { }, next) => {
     }
   });
 
-  fastify.get('/nhso', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/nhso', async (req: any, reply: any) => {
     const token = req.query.token;
     if (token) {
       // check token

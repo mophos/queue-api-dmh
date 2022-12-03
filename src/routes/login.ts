@@ -1,6 +1,6 @@
 /// <reference path="../../typings.d.ts" />
 
-import * as Knex from 'knex';
+import { Knex } from 'knex';
 import * as fastify from 'fastify';
 import * as crypto from 'crypto';
 import * as HttpStatus from 'http-status-codes';
@@ -14,7 +14,7 @@ const router = (fastify, { }, next) => {
 
   var db: Knex = fastify.db;
 
-  fastify.post('/', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/', async (req: any, reply: any) => {
     const body: any = req.body;
 
     const username = body.username;

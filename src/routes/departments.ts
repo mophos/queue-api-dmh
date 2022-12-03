@@ -1,6 +1,7 @@
 /// <reference path="../../typings.d.ts" />
 
-import * as Knex from 'knex';
+import { Knex } from 'knex';
+
 import * as fastify from 'fastify';
 import * as HttpStatus from 'http-status-codes';
 import { DepartmentModel } from '../models/department';
@@ -11,7 +12,7 @@ const router = (fastify, { }, next) => {
 
   var db: Knex = fastify.db;
 
-  fastify.get('/', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     try {
       const rs: any = await departmentModel.list(db);
@@ -23,7 +24,7 @@ const router = (fastify, { }, next) => {
 
   })
 
-  fastify.post('/', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const departmentName = req.body.departmentName;
 
     const data: any = {
@@ -40,7 +41,7 @@ const router = (fastify, { }, next) => {
 
   })
 
-  fastify.put('/:departmentId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.put('/:departmentId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const departmentId: any = req.params.departmentId;
     const departmentName = req.body.departmentName;
 
@@ -58,7 +59,7 @@ const router = (fastify, { }, next) => {
 
   })
 
-  fastify.delete('/:departmentId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.delete('/:departmentId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const departmentId: any = req.params.departmentId;
 
     try {

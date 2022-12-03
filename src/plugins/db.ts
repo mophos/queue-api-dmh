@@ -11,4 +11,4 @@ function fastifyKnexJS(fastify, opts, next) {
   }
 }
 
-module.exports = fastifyPlugin(fastifyKnexJS, '>=0.30.0')
+module.exports = fastifyPlugin(fastifyKnexJS, '4.x')

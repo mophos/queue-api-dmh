@@ -1,4 +1,4 @@
-import * as knex from 'knex';
+
 const request = require('request');
 export class NhsoModel {
 

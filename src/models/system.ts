@@ -1,4 +1,5 @@
-import * as knex from 'knex';
+import { Knex as knex } from 'knex';
+
 
 export class SystemModel {
 

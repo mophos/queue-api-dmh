@@ -1,24 +1,25 @@
-import * as knex from 'knex';
+import { Knex } from 'knex';
+
 
 export class HosxpModel {
 
-  testConnection(db: knex) {
+  testConnection(db: Knex) {
     return db.raw(`select 'Q4U Work'`);
   }
 
-  getPatientInfo(db: knex, cid: any) {
+  getPatientInfo(db: Knex, cid: any) {
     return db('patient')
       .select('hn', 'fname as first_name', 'pname as title', 'sex', 'lname as last_name', 'birthday as birthdate')
       .where('cid', cid).limit(1);
   }
 
-  getPatientInfoWithHN(db: knex, hn: any) {
+  getPatientInfoWithHN(db: Knex, hn: any) {
     return db('patient')
       .select('hn', 'fname as first_name', 'pname as title', 'sex', 'lname as last_name', 'birthday as birthdate')
       .where('hn', hn).limit(1);
   }
 
-  getHISQueue(db: knex, hn: any, dateServ: any) {
+  getHISQueue(db: Knex, hn: any, dateServ: any) {
     return db('ovst')
       .select('oqueue as queue')
       .where('hn', hn)
@@ -27,7 +28,7 @@ export class HosxpModel {
       .limit(1)
   }
 
-  getVisitList(db: knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, query: any, limit: number = 20, offset: number = 0) {
+  getVisitList(db: Knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, query: any, limit: number = 20, offset: number = 0) {
     var sql = db('ovst as o')
       .select('o.vn', 'o.hn', db.raw('o.vstdate as date_serv'), db.raw('o.vsttime as time_serv'),
         'o.main_dep as clinic_code', 'k.department as clinic_name',
@@ -68,7 +69,7 @@ export class HosxpModel {
 
   }
 
-  getVisitTotal(db: knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, query: any) {
+  getVisitTotal(db: Knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, query: any) {
     var sql = db('ovst as o')
       .select(db.raw('count(*) as total'))
       .innerJoin('patient as pt', 'pt.hn', 'o.hn')
