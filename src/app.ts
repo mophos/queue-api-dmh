@@ -80,8 +80,8 @@ app.register(require('./plugins/db'), {
       database: process.env.DB_NAME,
     },
     pool: {
-      min: 0,
-      max: 7,
+      min: 10,
+      max: 100,
       afterCreate: (conn, done) => {
         conn.query('SET NAMES utf8', (err) => {
           done(err, conn);
@@ -108,8 +108,8 @@ if (process.env.DBHIS_TYPE === 'pg' || process.env.DBHIS_TYPE === 'mssql' || pro
         },
         searchPath: ['public'],
         pool: {
-          min: 0,
-          max: 7
+          min: 10,
+          max: 100
         },
         debug: false,
       },
@@ -128,8 +128,8 @@ if (process.env.DBHIS_TYPE === 'pg' || process.env.DBHIS_TYPE === 'mssql' || pro
           database: process.env.DBHIS_NAME,
         },
         pool: {
-          min: 0,
-          max: 7
+          min: 10,
+          max: 100
         },
         debug: false,
       },
@@ -149,8 +149,8 @@ if (process.env.DBHIS_TYPE === 'pg' || process.env.DBHIS_TYPE === 'mssql' || pro
         database: process.env.DBHIS_NAME,
       },
       pool: {
-        min: 0,
-        max: 7,
+        min: 10,
+        max: 100,
         afterCreate: (conn, done) => {
           conn.query('SET NAMES utf8', (err) => {
             done(err, conn);
