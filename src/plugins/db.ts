@@ -22,7 +22,7 @@ module.exports = fp(async function (fastify: any, opts: any, next: any) {
     const handler = Knex(opts.options);
 
     fastify
-      .decorate(opts.connectionName, handler)
+      .decorate(opts.name, handler)
       .addHook('onClose', (instance: any, done: any) => {
         if (instance.knex === handler) {
           instance.knex.destroy();

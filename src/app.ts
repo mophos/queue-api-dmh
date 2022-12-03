@@ -73,7 +73,8 @@ app.decorate("authenticate", async (request, reply) => {
 });
 
 app.register(require('./plugins/db'), {
-  connection: {
+  name: 'db',
+  options: {
     client: 'mysql',
     connection: {
       host: process.env.DB_HOST,
@@ -91,13 +92,13 @@ app.register(require('./plugins/db'), {
         });
       }
     },
-    debug: false,
-  },
-  connectionName: 'db'
+    debug: process.env.DB_DEBUG === "Y" ? true : false
+  }
 });
 
 app.register(require('./plugins/db'), {
-  connection: {
+  name: 'dbHIS',
+  options: {
     client: 'pg',
     connection: {
       host: process.env.DBHIS_HOST,
@@ -108,13 +109,11 @@ app.register(require('./plugins/db'), {
     },
     searchPath: ['public'],
     pool: {
-      min: 10,
+      min: 0,
       max: 100
     },
-    debug: false,
-  },
-
-  connectionName: 'dbHIS'
+    debug: process.env.DB_DEBUG === "Y" ? true : false
+  }
 });
 
 // MQTT
