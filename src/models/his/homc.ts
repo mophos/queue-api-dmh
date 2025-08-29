@@ -1,11 +1,11 @@
-import * as knex from 'knex';
+import { Knex } from 'knex';
 
 export class HomcModel {
 
-    testConnection(db: knex) {
+    testConnection(db: Knex) {
         return db.raw(`select 'Q4U Work'`);
     }
-    async getVisitList(db: knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, limit: number = 20, offset: number = 0) {
+    async getVisitList(db: Knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, limit: number = 20, offset: number = 0) {
         let data = await db.raw(`select top '${limit}' o.regNo as vn, o.hn, convert(date,convert(char,o.registDate -5430000)) as date_serv, 
         substring(o.timePt,1,2)+':'+substring(o.timePt,3,2) as time_serv, 
         d.deptCode as clinic_code, rtrim(d1.deptDesc) as clinic_name, rtrim(t.titleName) as title, 
@@ -20,8 +20,8 @@ export class HomcModel {
         return data;
     }
 
-    async getVisitTotal(db: knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any) {
-        let data= await db.raw(`select count(*) as total from OPD_H as o 
+    async getVisitTotal(db: Knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any) {
+        let data = await db.raw(`select count(*) as total from OPD_H as o 
         inner join PATIENT as p on p.hn = o.hn 
         inner join PTITLE as t on t.titleCode = p.titleCode 
         inner join Deptq_d as d on d.hn = o.hn and d.regNo=o.regNo

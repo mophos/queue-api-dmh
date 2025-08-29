@@ -4,43 +4,46 @@ import path = require('path');
 import * as HttpStatus from 'http-status-codes';
 import * as fastify from 'fastify';
 
-const serveStatic = require('serve-static');
-
 require('dotenv').config({ path: path.join(__dirname, '../config') });
 
-import { Server, IncomingMessage, ServerResponse } from 'http';
+import helmet = require('@fastify/helmet');
 
-import helmet = require('fastify-helmet');
-
-const app: fastify.FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
+const app: fastify.FastifyInstance = fastify.fastify({
   logger: {
-    level: 'error',
-    prettyPrint: true
-  },
-  bodyLimit: 5 * 1048576,
-});
+    transport:
+      process.env.ENV === 'development'
+        ? {
+          target: 'pino-pretty',
+          options: {
+            translateTime: 'HH:MM:ss Z',
+            ignore: 'pid,hostname'
+          }
+        }
+        : undefined
+  }
+})
 
-app.register(require('fastify-formbody'));
-app.register(require('fastify-cors'), {});
-app.register(require('fastify-no-icon'));
+app.register(require('@fastify/formbody'))
+app.register(require('@fastify/cors'), {})
 app.register(
-  helmet,
-  { hidePoweredBy: { setTo: 'PHP 5.2.0' } }
+  helmet
 );
 
-app.register(require('fastify-rate-limit'), {
+app.register(import('@fastify/rate-limit'), {
   max: +process.env.MAX_CONNECTION_PER_MINUTE || 1000000,
   timeWindow: '1 minute'
-});
+})
 
-app.use(serveStatic(path.join(__dirname, '../public')));
+app.register(require('@fastify/static'), {
+  root: path.join(__dirname, '../public'),
+})
 
-app.register(require('fastify-jwt'), {
+app.register(require('@fastify/jwt'), {
   secret: process.env.SECRET_KEY
 });
 
 var templateDir = path.join(__dirname, '../templates');
-app.register(require('point-of-view'), {
+app.register(require('@fastify/view'), {
   engine: {
     ejs: require('ejs')
   },
@@ -70,7 +73,8 @@ app.decorate("authenticate", async (request, reply) => {
 });
 
 app.register(require('./plugins/db'), {
-  connection: {
+  name: 'db',
+  options: {
     client: 'mysql',
     connection: {
       host: process.env.DB_HOST,
@@ -80,88 +84,37 @@ app.register(require('./plugins/db'), {
       database: process.env.DB_NAME,
     },
     pool: {
-      min: 0,
-      max: 7,
+      min: 10,
+      max: 100,
       afterCreate: (conn, done) => {
         conn.query('SET NAMES utf8', (err) => {
           done(err, conn);
         });
       }
     },
-    debug: false,
-  },
-  connectionName: 'db'
+    debug: process.env.DB_DEBUG === "Y" ? true : false
+  }
 });
 
-if (process.env.DBHIS_TYPE === 'pg' || process.env.DBHIS_TYPE === 'mssql' || process.env.DBHIS_TYPE === 'oracledb') {
-
-  if (process.env.DBHIS_TYPE === 'pg') {
-    app.register(require('./plugins/db'), {
-      connection: {
-        client: process.env.DBHIS_TYPE,
-        connection: {
-          host: process.env.DBHIS_HOST,
-          user: process.env.DBHIS_USER,
-          port: +process.env.DBHIS_PORT,
-          password: process.env.DBHIS_PASSWORD,
-          database: process.env.DBHIS_NAME,
-        },
-        searchPath: ['public'],
-        pool: {
-          min: 0,
-          max: 7
-        },
-        debug: false,
-      },
-
-      connectionName: 'dbHIS'
-    });
-  } else {
-    app.register(require('./plugins/db'), {
-      connection: {
-        client: process.env.DBHIS_TYPE,
-        connection: {
-          host: process.env.DBHIS_HOST,
-          user: process.env.DBHIS_USER,
-          port: +process.env.DBHIS_PORT,
-          password: process.env.DBHIS_PASSWORD,
-          database: process.env.DBHIS_NAME,
-        },
-        pool: {
-          min: 0,
-          max: 7
-        },
-        debug: false,
-      },
-      connectionName: 'dbHIS'
-    });
-  }
-
-} else {
-  app.register(require('./plugins/db'), {
+app.register(require('./plugins/db'), {
+  name: 'dbHIS',
+  options: {
+    client: 'pg',
     connection: {
-      client: 'mysql',
-      connection: {
-        host: process.env.DBHIS_HOST,
-        user: process.env.DBHIS_USER,
-        port: +process.env.DBHIS_PORT,
-        password: process.env.DBHIS_PASSWORD,
-        database: process.env.DBHIS_NAME,
-      },
-      pool: {
-        min: 0,
-        max: 7,
-        afterCreate: (conn, done) => {
-          conn.query('SET NAMES utf8', (err) => {
-            done(err, conn);
-          });
-        }
-      },
-      debug: false,
+      host: process.env.DBHIS_HOST,
+      user: process.env.DBHIS_USER,
+      port: +process.env.DBHIS_PORT,
+      password: process.env.DBHIS_PASSWORD,
+      database: process.env.DBHIS_NAME,
     },
-    connectionName: 'dbHIS'
-  });
-}
+    searchPath: ['public'],
+    pool: {
+      min: 0,
+      max: 100
+    },
+    debug: process.env.DB_DEBUG === "Y" ? true : false
+  }
+});
 
 // MQTT
 app.register(require('./plugins/mqtt'), {
@@ -202,14 +155,14 @@ app.register(require('./routes/sounds'), { prefix: '/v1/sounds', logger: true })
 app.register(require('./routes/kiosk'), { prefix: '/v1/kiosk', logger: true });
 app.register(require('./routes/nhso'), { prefix: '/v1/nhso', logger: true });
 
-app.get('/', async (req: fastify.Request, reply: fastify.Reply) => {
+app.get('/', async (req: any, reply: any) => {
   reply.code(200).send({ message: 'Welcome to Q4U API services!', version: '2.9 build 20190319-1' });
 });
 
 const port = 3002;
 const host = '0.0.0.0';
 
-app.listen(port, host, (err) => {
+app.listen({ port: port, host: host }, (err) => {
   if (err) throw err;
   console.log(app.server.address());
 });

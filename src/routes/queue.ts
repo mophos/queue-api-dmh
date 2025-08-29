@@ -1,5 +1,5 @@
 /// <reference path="../../typings.d.ts" />
-import * as Knex from 'knex';
+import { Knex } from 'knex';
 import * as fastify from 'fastify';
 import * as HttpStatus from 'http-status-codes';
 import * as moment from 'moment';
@@ -65,7 +65,7 @@ const router = (fastify, { }, next) => {
     }
   };
 
-  fastify.get('/test', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/test', async (req: any, reply: any) => {
     try {
       const rs: any = await hisModel.testConnection(dbHIS);
       reply.status(HttpStatus.OK).send({ statusCode: HttpStatus.OK, results: 'Welcome to Q4U!' })
@@ -75,7 +75,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/patient/info', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/patient/info', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
     var cid = req.body.cid;
 
     if (cid) {
@@ -118,7 +118,7 @@ const router = (fastify, { }, next) => {
 
   })
 
-  fastify.get('/his-visit', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/his-visit', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const limit = +req.query.limit;
     const offset = +req.query.offset;
@@ -151,7 +151,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/register', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/register', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
     const hn = req.body.hn;
     const vn = req.body.vn;
     const localCode = req.body.clinicCode;
@@ -164,6 +164,7 @@ const router = (fastify, { }, next) => {
     const title = req.body.title;
     const birthDate = req.body.birthDate;
     const sex = req.body.sex;
+    const authenCode = req.body.authenCode;
 
     if (hn && vn && localCode && dateServ && timeServ && firstName && lastName && birthDate) {
       try {
@@ -266,7 +267,7 @@ const router = (fastify, { }, next) => {
           qData.hisQueue = hisQueue;
           qData.queueRunning = _queueRunning;
           qData.queueInterview = queueInterview;
-
+          qData.authenCode = authenCode;
           const queueId: any = await queueModel.createQueueInfo(db, qData);
 
           const topic = process.env.QUEUE_CENTER_TOPIC;
@@ -291,7 +292,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/prepare/register', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/prepare/register', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
     const hn = req.body.hn;
     const servicePointId = req.body.servicePointId;
     const priorityId = req.body.priorityId;
@@ -468,7 +469,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/waiting/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/waiting/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const servicePointId = req.params.servicePointId;
     const query = req.body.query;
@@ -486,7 +487,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/waiting-group/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/waiting-group/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const servicePointId = req.params.servicePointId;
     const priorityId = req.query.priorityId || null;
@@ -505,7 +506,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/waiting-group/search/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/waiting-group/search/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const servicePointId = req.params.servicePointId;
     const priorityId = +req.query.priorityId || null;
@@ -526,7 +527,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/history-group/search/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/history-group/search/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const servicePointId = req.params.servicePointId;
     const limit = +req.query.limit || 20;
@@ -543,7 +544,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/department/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/department/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const departmentId = req.params.departmentId;
     const limit = +req.query.limit || 20;
@@ -561,7 +562,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/department/history/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/department/history/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const departmentId = req.params.departmentId;
     const limit = +req.query.limit || 20;
@@ -579,7 +580,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/department/search/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/department/search/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const departmentId = req.params.departmentId;
     const limit = +req.query.limit || 20;
@@ -598,7 +599,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/working/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/working/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const servicePointId = req.params.servicePointId;
 
@@ -613,7 +614,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/working-group/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/working-group/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const servicePointId = req.params.servicePointId;
 
@@ -628,7 +629,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/working/department/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/working/department/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const departmentId = req.params.departmentId;
 
@@ -643,7 +644,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/all-queue/active', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/all-queue/active', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     try {
       const dateServ: any = moment().format('YYYY-MM-DD');
@@ -655,7 +656,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/working/history-group/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/working/history-group/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const servicePointId = req.params.servicePointId;
 
@@ -670,7 +671,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/working/history/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/working/history/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const servicePointId = req.params.servicePointId;
 
@@ -685,7 +686,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/pending/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/pending/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const servicePointId = req.params.servicePointId;
 
@@ -700,7 +701,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/pending/department/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/pending/department/:departmentId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const departmentId = req.params.departmentId;
 
@@ -715,7 +716,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.put('/interview/marked/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.put('/interview/marked/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const queueId = req.params.queueId;
 
@@ -728,7 +729,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/pending', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/pending', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const queueId = req.body.queueId;
     const servicePointId = req.body.servicePointId;
@@ -812,7 +813,7 @@ const router = (fastify, { }, next) => {
           var newQueueId = null;
           var queueInterview = 0;
 
-          var rs1: any;
+          var rs1: any[];
 
           if (usePriorityQueueRunning === 'Y') {
             rs1 = await queueModel.checkServicePointQueueNumber(db, servicePointId, dateServ, priorityId);
@@ -898,7 +899,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/caller/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/caller/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const queueId = req.params.queueId;
     const servicePointId = req.body.servicePointId;
@@ -1005,7 +1006,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/caller-groups', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/caller-groups', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     // const queueId = req.params.queueId;
     const servicePointId = req.body.servicePointId;
@@ -1113,7 +1114,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/caller-group/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/caller-group/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const queueId = req.params.queueId;
     const servicePointId = req.body.servicePointId;
@@ -1209,7 +1210,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/caller/department/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/caller/department/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const queueId = req.params.queueId;
     const departmentId = req.body.departmentId;
@@ -1292,7 +1293,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/change-room', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/change-room', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const queueId = req.body.queueId;
     const roomId = req.body.roomId;
@@ -1326,7 +1327,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.post('/change-room-group', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/change-room-group', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const queueId = req.body.queueId;
     const roomId = req.body.roomId;
@@ -1370,7 +1371,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/current-list', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/current-list', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const currentDate = moment().format('YYYY-MM-DD');
     try {
@@ -1382,7 +1383,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.delete('/cancel/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.delete('/cancel/:queueId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     const queueId = req.params.queueId;
 
@@ -1395,7 +1396,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/service-points', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/service-points', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     try {
       const rs: any = await servicePointModel.list(db);

@@ -1,24 +1,24 @@
-import * as knex from 'knex';
+import { Knex } from 'knex';
 
 export class HiModel {
 
-  testConnection(db: knex) {
+  testConnection(db: Knex) {
     return db.raw(`select 'Q4U Work'`);
   }
 
-  getPatientInfo(db: knex, cid: any) {
+  getPatientInfo(db: Knex, cid: any) {
     return db('pt')
       .select('hn', 'fname as first_name', 'pname as title', 'male as sex', 'lname as last_name', 'brthdate as birthdate')
       .where('pop_id', cid).limit(1);
   }
 
-  getPatientInfoWithHN(db: knex, hn: any) {
+  getPatientInfoWithHN(db: Knex, hn: any) {
     return db('pt')
       .select('hn', 'fname as first_name', 'pname as title', 'male as sex', 'lname as last_name', 'brthdate as birthdate')
       .where('hn', hn).limit(1);
   }
 
-  getVisitList(db: knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, query: any, limit: number = 20, offset: number = 0) {
+  getVisitList(db: Knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, query: any, limit: number = 20, offset: number = 0) {
     var sql = db('ovst as o')
       .select('o.vn', 'o.hn', db.raw('date(vstdttm) as date_serv'), db.raw('time(vstdttm) as time_serv'),
         'o.cln as clinic_code', 'c.namecln as clinic_name', 'pt.pname as title', 'pt.fname as first_name', 'pt.lname as last_name',
@@ -59,7 +59,7 @@ export class HiModel {
 
   }
 
-  getVisitTotal(db: knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, query: any) {
+  getVisitTotal(db: Knex, dateServ: any, localCode: any[], vn: any[], servicePointCode: any, query: any) {
     var sql = db('ovst as o')
       .select(db.raw('count(*) as total'))
       .innerJoin('pt', 'pt.hn', 'o.hn')

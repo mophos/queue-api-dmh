@@ -1,6 +1,7 @@
 /// <reference path="../../typings.d.ts" />
 
-import * as Knex from 'knex';
+import { Knex } from 'knex';
+
 import * as fastify from 'fastify';
 import * as HttpStatus from 'http-status-codes';
 import { SoundModel } from '../models/sound';
@@ -11,7 +12,7 @@ const router = (fastify, { }, next) => {
 
   var db: Knex = fastify.db;
 
-  fastify.get('/', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     try {
       const rs: any = await soundModel.list(db);
@@ -25,7 +26,7 @@ const router = (fastify, { }, next) => {
 
 
 
-  fastify.put('/:servicePointId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.put('/:servicePointId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const servicePointId: any = req.params.servicePointId;
     const soundId = req.body.soundId;
 

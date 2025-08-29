@@ -1,4 +1,4 @@
-import * as knex from 'knex';
+
 var request = require("request");
 export class KioskModel {
 

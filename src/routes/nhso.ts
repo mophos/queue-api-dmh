@@ -1,9 +1,7 @@
 /// <reference path="../../typings.d.ts" />
-import * as Knex from 'knex';
+
 import * as fastify from 'fastify';
 import * as HttpStatus from 'http-status-codes';
-import * as moment from 'moment';
-const request = require('request')
 
 import { NhsoModel } from '../models/nhso';
 
@@ -14,7 +12,7 @@ const nhsoModel = new NhsoModel();
 const router = (fastify, { }, next) => {
 
 
-  fastify.post('/', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/', async (req: any, reply: any) => {
     try {
       const data = req.body;
       console.log(data);

@@ -1,6 +1,7 @@
 /// <reference path="../../typings.d.ts" />
 
-import * as Knex from 'knex';
+import { Knex } from 'knex';
+
 import * as fastify from 'fastify';
 import * as HttpStatus from 'http-status-codes';
 import * as Random from 'random-js';
@@ -14,7 +15,7 @@ const router = (fastify, { }, next) => {
   var db: Knex = fastify.db;
 
   // get service point lists
-  fastify.get('/', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     try {
       const rs: any = await servicePointModel.list(db);
@@ -25,7 +26,7 @@ const router = (fastify, { }, next) => {
     }
   })
 
-  fastify.get('/kios', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/kios', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     try {
       const rs: any = await servicePointModel.listKios(db);
@@ -37,7 +38,7 @@ const router = (fastify, { }, next) => {
   })
 
   // save new service point
-  fastify.post('/', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const servicePointName = req.body.servicePointName;
     const localCode = req.body.localCode;
     const servicePointAbbr = req.body.servicePointAbbr;
@@ -73,7 +74,7 @@ const router = (fastify, { }, next) => {
   })
 
   // update service point
-  fastify.put('/:servicePointId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.put('/:servicePointId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const servicePointId: any = req.params.servicePointId;
     const servicePointName = req.body.servicePointName;
     const localCode = req.body.localCode;
@@ -110,7 +111,7 @@ const router = (fastify, { }, next) => {
   })
 
   // remove service point
-  fastify.delete('/:servicePointId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.delete('/:servicePointId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const servicePointId: any = req.params.servicePointId;
 
     try {

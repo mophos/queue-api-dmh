@@ -1,7 +1,7 @@
 /// <reference path="../../typings.d.ts" />
 import { KioskModel } from './../models/kiosk';
 import * as moment from 'moment';
-import * as Knex from 'knex';
+import { Knex } from 'knex';
 import * as fastify from 'fastify';
 import * as HttpStatus from 'http-status-codes';
 import { QueueModel } from '../models/queue';
@@ -42,10 +42,10 @@ switch (hisType) {
 
 const router = (fastify, { }, next) => {
 
-  const db: Knex = fastify.db;
+  // const db: Knex = fastify.db;
 
   // send from smartcard
-  fastify.post('/profile', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/profile', async (req: any, reply: any) => {
 
     try {
       console.log('insert');
@@ -83,7 +83,7 @@ const router = (fastify, { }, next) => {
 
   });
 
-  fastify.delete('/profile', async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.delete('/profile', async (req: any, reply: any) => {
 
     try {
       const token = req.body.token;
@@ -110,7 +110,7 @@ const router = (fastify, { }, next) => {
 
   });
   // ===============
-  fastify.post('/patient/info', { preHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/patient/info', { preHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
     const cid = req.body.cid;
     const hn = req.body.hn;
     const dbHIS: Knex = fastify.dbHIS;
@@ -159,7 +159,7 @@ const router = (fastify, { }, next) => {
 
   });
 
-  fastify.get('/patient/info/remed', { preHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/patient/info/remed', { preHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
     const hn = req.query.hn;
     if (hn) {
       try {
@@ -175,7 +175,7 @@ const router = (fastify, { }, next) => {
 
   });
 
-  fastify.post('/nhso', { preHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/nhso', { preHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
     // const token = req.body.token;
     const data = req.body.data;
     // console.log(data);
@@ -197,7 +197,7 @@ const router = (fastify, { }, next) => {
     }
   });
 
-  fastify.post('/trigger', { preHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/trigger', { preHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
     const url = req.body.url;
     const hn = req.body.hn;
     const cid = req.body.cid;

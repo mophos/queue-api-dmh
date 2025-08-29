@@ -1,22 +1,22 @@
-import * as knex from 'knex';
+import { Knex } from 'knex';
 
 export class DepartmentModel {
 
   tableName = 'q4u_departments';
 
-  list(db: knex) {
+  list(db: Knex) {
     return db(this.tableName).orderBy('department_name');
   }
 
-  save(db: knex, data: any) {
+  save(db: Knex, data: any) {
     return db(this.tableName).insert(data);
   }
 
-  update(db: knex, departmentId: any, data: any) {
+  update(db: Knex, departmentId: any, data: any) {
     return db(this.tableName).where('department_id', departmentId).update(data);
   }
 
-  remove(db: knex, departmentId: any) {
+  remove(db: Knex, departmentId: any) {
     return db(this.tableName).where('department_id', departmentId).del();
   }
 

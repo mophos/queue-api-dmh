@@ -1,6 +1,7 @@
 /// <reference path="../../typings.d.ts" />
 
-import * as Knex from 'knex';
+import { Knex } from 'knex';
+
 import * as fastify from 'fastify';
 import * as HttpStatus from 'http-status-codes';
 import { ServiceRoomModel } from '../models/service_room';
@@ -12,7 +13,7 @@ const router = (fastify, { }, next) => {
   var db: Knex = fastify.db;
 
   // get service point lists
-  fastify.get('/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.get('/:servicePointId', { beforeHandler: [fastify.authenticate] }, async (req: any, reply: any) => {
 
     try {
       const servicePointId = req.params.servicePointId;
@@ -25,7 +26,7 @@ const router = (fastify, { }, next) => {
   })
 
   // save new service room
-  fastify.post('/', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.post('/', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const roomName = req.body.roomName;
     const roomNumber = req.body.roomNumber;
     const servicePointId = req.body.servicePointId;
@@ -46,7 +47,7 @@ const router = (fastify, { }, next) => {
   })
 
   // update service room
-  fastify.put('/:roomId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.put('/:roomId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const roomId: any = req.params.roomId;
     const roomName = req.body.roomName;
     const roomNumber = req.body.roomNumber;
@@ -68,7 +69,7 @@ const router = (fastify, { }, next) => {
   })
 
   // remove service point
-  fastify.delete('/:roomId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: fastify.Request, reply: fastify.Reply) => {
+  fastify.delete('/:roomId', { beforeHandler: [fastify.authenticate, fastify.verifyAdmin] }, async (req: any, reply: any) => {
     const roomId: any = req.params.roomId;
 
     try {
